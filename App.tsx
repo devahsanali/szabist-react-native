@@ -6,23 +6,28 @@
  */
 
 import React from 'react';
-import Greeting from './src/Greeting';
-import Counter from './src/Counter';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import HomeScreen from './src/HomeScreen';
+import DetailsScreen from './src/DetailsScreen';
 
 
 import {
   View
 } from 'react-native';
 
+const Stack = createStackNavigator();
 
-function App(): React.JSX.Element {
+function App(){
   return (
-    <View style={{ padding: 20 }}>
-          <Greeting name="John" />
-          <Greeting name="Alice" />
-          <Counter />
-    </View>
+      <NavigationContainer>
+            <Stack.Navigator initialRouteName="Home">
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Details" component={DetailsScreen} />
+            </Stack.Navigator>
+      </NavigationContainer>
   );
 };
 
 export default App;
+
