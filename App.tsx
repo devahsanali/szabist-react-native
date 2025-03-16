@@ -1,33 +1,46 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import * as React from 'react';
+import { View } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import {
+  createStaticNavigation,
+  useNavigation,
+} from '@react-navigation/native';
+import { Button } from '@react-navigation/elements';
 import HomeScreen from './src/HomeScreen';
 import DetailsScreen from './src/DetailsScreen';
+import { NavigationContainer } from '@react-navigation/native';
+function ProductsScreen() {
+  const navigation = useNavigation();
 
-
-import {
-  View
-} from 'react-native';
-
-const Stack = createStackNavigator();
-
-function App(){
   return (
-      <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Details" component={DetailsScreen} />
-            </Stack.Navigator>
-      </NavigationContainer>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button onPress={() => navigation.goBack()}>Go back home</Button>
+    </View>
   );
+}
+
+const Drawer = createDrawerNavigator();
+
+const DetailsScreenWrapper = () => {
+  const navigation = useNavigation();
+
+  React.useEffect(() => {
+    navigation.setParams({
+      message: 'Hello from Drawer!',
+    });
+  }, [navigation]);
+
+  return <DetailsScreen />;
 };
 
-export default App;
-
+export default function App() {
+    return (
+      <NavigationContainer>
+        <Drawer.Navigator>
+          <Drawer.Screen name="Home" component={HomeScreen} />
+          <Drawer.Screen name="Products" component={ProductsScreen} />
+          <Drawer.Screen name="Details"  component={() => <DetailsScreen message="Hello from Drawer!" />}  />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+}

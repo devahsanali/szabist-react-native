@@ -1,14 +1,18 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
-const DetailsScreen = ({ route, navigation }) => {
-  const { message } = route.params; // Receiving data from HomeScreen
+const DetailsScreen = ({ message }) => {
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Details Screen</Text>
       <Text style={styles.message}>Message: {message}</Text>
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
+        <Button
+           title="Go back home"
+           onPress={() => navigation.navigate('Home')}
+         />
     </View>
   );
 };
