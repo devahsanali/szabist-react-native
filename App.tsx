@@ -8,6 +8,7 @@ import {
 import { Button } from '@react-navigation/elements';
 import HomeScreen from './src/HomeScreen';
 import DetailsScreen from './src/DetailsScreen';
+import FormScreen from './src/FormScreen';
 import { NavigationContainer } from '@react-navigation/native';
 
 function ProductsScreen() {
@@ -33,6 +34,7 @@ export default function App() {
             component={DetailsScreen}
             initialParams={{ message: "Hello from Drawer!" }}
           />
+          <Drawer.Screen name="Form" component={FormScreen} />
         </Drawer.Navigator>
       </NavigationContainer>
     );
