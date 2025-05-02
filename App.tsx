@@ -9,10 +9,11 @@ import { Button } from '@react-navigation/elements';
 import HomeScreen from './src/HomeScreen';
 import DetailsScreen from './src/DetailsScreen';
 import FormScreen from './src/FormScreen';
-import FlatList from './src/FlatList';
+import ProductsScreen from './src/Products/ProductScreen'; // Ensure this path is correct
+
 import { NavigationContainer } from '@react-navigation/native';
 
-function ProductsScreen() {
+function ProductsScreens() {
   const navigation = useNavigation();
 
   return (
@@ -29,14 +30,14 @@ export default function App() {
       <NavigationContainer>
         <Drawer.Navigator>
           <Drawer.Screen name="Home" component={HomeScreen} />
-          <Drawer.Screen name="Products" component={ProductsScreen} />
+          <Drawer.Screen name="Product" component={ProductsScreens} />
           <Drawer.Screen
             name="Details"
             component={DetailsScreen}
             initialParams={{ message: "Hello from Drawer!" }}
           />
           <Drawer.Screen name="Form" component={FormScreen} />
-          <Drawer.Screen name="FlatList" component={FlatList} />
+          <Drawer.Screen name="Products" component={ProductsScreen} />
         </Drawer.Navigator>
       </NavigationContainer>
     );
