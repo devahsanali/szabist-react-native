@@ -14,6 +14,7 @@ import ProductItem from './component/ItemComponent';
 import ProductForm from './component/FormComponent';
 import DeleteConfirmationModal from './component/DeleteModalComponent';
 import Toast from '.././component/Toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -36,7 +37,10 @@ const Products = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://10.0.2.2:3000/api/products');
+       const headers = await getAuthHeaders();
+       const response = await fetch('http://10.0.2.2:3000/api/products', {
+         headers,
+       });
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -48,6 +52,7 @@ const Products = () => {
 
   const saveProduct = async (data) => {
     try {
+      const headers = await getAuthHeaders();
       const url = selectedProduct
         ? `http://10.0.2.2:3000/api/products/${selectedProduct.id}`
         : 'http://10.0.2.2:3000/api/products';
@@ -55,7 +60,7 @@ const Products = () => {
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(data),
       });
 
@@ -83,9 +88,11 @@ const Products = () => {
 
   const confirmDelete = async () => {
     const { id } = deleteProductData;
+    const headers = await getAuthHeaders();
     try {
       const response = await fetch(`http://10.0.2.2:3000/api/products/${id}`, {
         method: 'DELETE',
+        headers
       });
       if (response.ok) {
         await fetchProducts();
@@ -132,6 +139,14 @@ const Products = () => {
     setRefreshing(true);
     await fetchProducts();
     setRefreshing(false);
+  };
+
+  const getAuthHeaders = async () => {
+    const token = await AsyncStorage.getItem('token');
+    return {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    };
   };
 
   return (

@@ -1,44 +1,68 @@
-import * as React from 'react';
-import { View } from 'react-native';
+import React, { useContext } from 'react';
+import { AuthProvider, AuthContext } from './src/Auth/AuthContext';
+import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import {
-  createStaticNavigation,
-  useNavigation,
-} from '@react-navigation/native';
-import { Button } from '@react-navigation/elements';
 import HomeScreen from './src/HomeScreen';
 import DetailsScreen from './src/DetailsScreen';
 import FormScreen from './src/FormScreen';
-import ProductsScreen from './src/Products/ProductScreen'; // Ensure this path is correct
+import ProductsScreen from './src/Products/ProductScreen';
+import LoginScreen from './src/Auth/LoginScreen';
+import SignupScreen from './src/Auth/SignupScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 
-import { NavigationContainer } from '@react-navigation/native';
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
-function ProductsScreens() {
-  const navigation = useNavigation();
+function CustomDrawerContent(props) {
+  const { logout } = useContext(AuthContext);
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Button onPress={() => navigation.goBack()}>Go back home</Button>
-    </View>
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <DrawerItem
+        label="Logout"
+        onPress={logout}
+        labelStyle={{ color: 'red' }}
+      />
+    </DrawerContentScrollView>
   );
 }
 
-const Drawer = createDrawerNavigator();
+function AppStack() {
+  return (
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />}>
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Product" component={ProductsScreen} />
+      <Drawer.Screen name="Details" component={DetailsScreen} />
+      <Drawer.Screen name="Form" component={FormScreen} />
+    </Drawer.Navigator>
+  );
+}
+
+function AuthStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function RootNavigator() {
+  const { userToken } = useContext(AuthContext);
+
+  return (
+    <NavigationContainer>
+      {userToken ? <AppStack /> : <AuthStack />}
+    </NavigationContainer>
+  );
+}
 
 export default function App() {
-    return (
-      <NavigationContainer>
-        <Drawer.Navigator>
-          <Drawer.Screen name="Home" component={HomeScreen} />
-          <Drawer.Screen name="Product" component={ProductsScreens} />
-          <Drawer.Screen
-            name="Details"
-            component={DetailsScreen}
-            initialParams={{ message: "Hello from Drawer!" }}
-          />
-          <Drawer.Screen name="Form" component={FormScreen} />
-          <Drawer.Screen name="Products" component={ProductsScreen} />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    );
+  return (
+    <AuthProvider>
+      <RootNavigator />
+    </AuthProvider>
+  );
 }

@@ -15,7 +15,7 @@ const HomeScreen = () => {
           <Text style={styles.text}>Welcome to Home Screen</Text>
           <Button
             title="Go to Details"
-            onPress={() => navigation.navigate('Details')}
+            onPress={() => navigation.navigate('Details', { message: 'Hello from Home!' })}
           />
       </View>
       <Greeting name="John" />
