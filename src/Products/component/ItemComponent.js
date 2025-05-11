@@ -4,18 +4,31 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  Image,
 } from 'react-native';
 
 const ProductItem = ({ item, onEdit, onDelete }) => (
   <View style={styles.itemContainer}>
-    <View style={styles.textContainer}>
-      <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
+    <View style={styles.imageWrapper}>
+      {item.image ? (
+        <Image
+          source={{ uri: `http://10.0.2.2:3000/uploads/${item.image}` }}
+          style={styles.image}
+        />
+      ) : (
+        <View style={styles.placeholder}>
+          <Text style={styles.placeholderText}>No Image</Text>
+        </View>
+      )}
+    </View>
+
+    <View style={styles.infoContainer}>
+      <Text style={styles.itemName} numberOfLines={1}>
         {item.name}
       </Text>
       <Text
         style={styles.itemDescription}
         numberOfLines={2}
-        ellipsizeMode="tail"
       >
         {item.description}
       </Text>
@@ -23,16 +36,16 @@ const ProductItem = ({ item, onEdit, onDelete }) => (
         ${item.price}
       </Text>
     </View>
-    <View style={styles.buttonContainer}>
+    <View style={styles.actionContainer}>
       <TouchableOpacity
-        style={[styles.button, styles.editButton]}
+        style={[styles.actionButton, styles.editButton]}
         onPress={() => onEdit(item)}
         activeOpacity={0.7}
       >
         <Text style={styles.buttonText}>Edit</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        style={[styles.button, styles.deleteButton]}
+        style={[styles.actionButton, styles.deleteButton]}
         onPress={() => onDelete(item.id)}
         activeOpacity={0.7}
       >
@@ -45,7 +58,6 @@ const ProductItem = ({ item, onEdit, onDelete }) => (
 const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 12,
     marginVertical: 6,
@@ -66,51 +78,73 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  textContainer: {
-    flex: 1,
+  imageWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#f0f0f0',
     marginRight: 12,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  placeholder: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#eee',
+  },
+  placeholderText: {
+    color: '#999',
+    fontSize: 12,
+  },
+  infoContainer: {
+    flex: 1,
   },
   itemName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
+    marginBottom: 4,
   },
   itemDescription: {
     fontSize: 13,
     color: '#666',
-    marginTop: 2,
-    lineHeight: 18,
+    marginBottom: 6,
   },
   itemPrice: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#000',
-    marginTop: 4,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#2c3e50',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  actionContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    height: 80,
   },
-  button: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+  actionButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     borderRadius: 6,
-    marginLeft: 6,
+    minWidth: 60,
+    marginBottom: 6,
     alignItems: 'center',
-    justifyContent: 'center',
-    minWidth: 70,
   },
   editButton: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: '#27ae60',
   },
   deleteButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#c0392b',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '600',
-    textTransform: 'uppercase',
   },
 });
 

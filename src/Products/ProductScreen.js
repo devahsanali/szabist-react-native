@@ -56,14 +56,30 @@ const Products = () => {
       const url = selectedProduct
         ? `http://10.0.2.2:3000/api/products/${selectedProduct.id}`
         : 'http://10.0.2.2:3000/api/products';
-      const method = selectedProduct ? 'PUT' : 'POST';
+      const method = 'POST';
 
+       const formData = new FormData();
+          formData.append('name', data.name);
+          formData.append('description', data.description);
+          formData.append('price', parseFloat(data.price));
+
+          if (data.image && data.image.uri) {
+            const uriParts = data.image.uri.split('.');
+            const fileType = uriParts[uriParts.length - 1];
+            formData.append('image', {
+              uri: data.image.uri,
+              name: `photo.${fileType}`,
+              type: `image/${fileType}`,
+            });
+          }
+      const token = await AsyncStorage.getItem('token');
       const response = await fetch(url, {
         method,
-        headers,
-        body: JSON.stringify(data),
+        headers: {
+         Authorization: `Bearer ${token}`,
+        },
+        body: formData,
       });
-
       if (response.ok) {
         await fetchProducts();
         setModalVisible(false);

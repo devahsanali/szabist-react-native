@@ -4,16 +4,20 @@ import {
   Modal,
   TextInput,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
   Platform,
 } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProductForm = ({ visible, onSave, onCancel, product }) => {
+ const ProductForm = ({ visible, onSave, onCancel, product }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
+    image: null,
   });
   const [errors, setErrors] = useState({});
 
@@ -23,6 +27,7 @@ const ProductForm = ({ visible, onSave, onCancel, product }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price,
+        image: product.image  || null,
       });
       setErrors({});
     } else {
@@ -30,6 +35,7 @@ const ProductForm = ({ visible, onSave, onCancel, product }) => {
         name: '',
         description: '',
         price: '',
+        image: null
       });
       setErrors({});
     }
@@ -53,6 +59,17 @@ const ProductForm = ({ visible, onSave, onCancel, product }) => {
         price: parseFloat(formData.price) || 0,
       });
     }
+  };
+
+  const pickImage = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      if (response.assets && response.assets.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          image: response.assets[0],
+        }));
+      }
+    });
   };
 
   return (
@@ -103,6 +120,30 @@ const ProductForm = ({ visible, onSave, onCancel, product }) => {
               onChangeText={(text) => setFormData({ ...formData, price: text.replace(/[^0-9.]/g, '') })}
             />
             {errors.price && <Text style={styles.errorText}>{errors.price}</Text>}
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Product Image</Text>
+            <TouchableOpacity
+              onPress={pickImage}
+              style={[styles.input, { justifyContent: 'center', alignItems: 'center' }]}
+            >
+              <Text style={{ color: '#333' }}>
+                {formData.image ? 'Change Image' : 'Pick Image'}
+              </Text>
+            </TouchableOpacity>
+            {formData.image && (
+              <View style={{ marginTop: 10, alignItems: 'center' }}>
+               <Image
+                 source={{
+                   uri: typeof formData.image === 'string'
+                     ? `http://10.0.2.2:3000/uploads/${formData.image}`
+                     : formData.image.uri,
+                 }}
+                 style={{ width: 100, height: 100, borderRadius: 6 }}
+               />
+              </View>
+            )}
           </View>
 
           <View style={styles.modalButtonContainer}>
